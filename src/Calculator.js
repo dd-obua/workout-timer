@@ -1,13 +1,21 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import clickSound from "./ClickSound.m4a";
 
 function Calculator({ workouts, allowSound }) {
   const [number, setNumber] = useState(workouts.at(0).numExercises);
   const [sets, setSets] = useState(3);
   const [speed, setSpeed] = useState(90);
-  const [durationBreak, setDurationBreak] = useState(5);
+  const [breakDuration, setBreakDuration] = useState(5);
+  const [duration, setDuration] = useState(0);
 
-  const duration = (number * sets * speed) / 60 + (sets - 1) * durationBreak;
+  useEffect(
+    function () {
+      setDuration((number * sets * speed) / 60 + (sets - 1) * breakDuration);
+    },
+    [number, sets, speed, breakDuration]
+  );
+
+  // const duration = (number * sets * speed) / 60 + (sets - 1) * breakDuration;
   const mins = Math.floor(duration);
   const seconds = (duration - mins) * 60;
 
@@ -59,10 +67,10 @@ function Calculator({ workouts, allowSound }) {
             type="range"
             min="1"
             max="10"
-            value={durationBreak}
-            onChange={(e) => setDurationBreak(e.target.value)}
+            value={breakDuration}
+            onChange={(e) => setBreakDuration(e.target.value)}
           />
-          <span>{durationBreak} minutes/break</span>
+          <span>{breakDuration} minutes/break</span>
         </div>
       </form>
       <section>
